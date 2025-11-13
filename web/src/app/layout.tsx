@@ -1,7 +1,11 @@
+import "./globals.css";
+import "@mantine/core/styles.css";
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { AppLayout } from "../components/AppLayout";
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
+import { AppProvider } from "../components/AppProvider";
 
 const inter = Inter({
     variable: "--font-inter",
@@ -18,9 +22,14 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="h-full">
+        <html lang="en" className="h-full" {...mantineHtmlProps}>
+            <head>
+                <ColorSchemeScript />
+            </head>
             <body className={`${inter.variable} antialiased h-full`}>
-                <AppLayout>{children}</AppLayout>
+                <AppProvider>
+                    <AppLayout>{children}</AppLayout>
+                </AppProvider>
             </body>
         </html>
     );

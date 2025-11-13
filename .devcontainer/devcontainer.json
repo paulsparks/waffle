@@ -1,0 +1,15 @@
+{
+    "name": "Waffle",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "workspace",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
+}
