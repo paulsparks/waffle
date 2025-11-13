@@ -534,6 +534,11 @@
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-8.3.7.tgz#c5f8d8b7d5608222f7c157bb3408909db3ce6006"
   integrity sha512-2xnKS8C6fTzMoq1dtOJGrh2bIBuWnVrijL/DsDk60UaUgbABh8zScwU5ndX+p02ds2bebo34LovscP9fH38uPg==
 
+"@mantinex/dev-icons@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@mantinex/dev-icons/-/dev-icons-2.0.0.tgz#b639829eea8e0d44bca44df3ef6a53bcd56de9b6"
+  integrity sha512-MoFDq9WJEE9LJ0ytFGTSlbj5MrTzGF2yi458khwvVpqJ0PlEKJA0UcVoYVPmVgIKsOqVfrThbY5gCHu5UlP/mg==
+
 "@napi-rs/wasm-runtime@^0.2.11":
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@napi-rs/wasm-runtime/-/wasm-runtime-0.2.12.tgz#3e78a8b96e6c33a6c517e1894efbd5385a7cb6f2"

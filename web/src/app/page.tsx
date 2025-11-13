@@ -1,8 +1,24 @@
+import { Button, Container, Text } from "@mantine/core";
+
 export default function Home() {
     return (
-        <>
-            <h1 className="text-5xl text-center">Hello World</h1>
-            test
-        </>
+        <div className="flex flex-col justify-center h-full text-center">
+            <Container size={700}>
+                <Text size="40pt">
+                    Welcome to{" "}
+                    <Text
+                        component="span"
+                        variant="gradient"
+                        gradient={{ from: "orange", to: "yellow" }}
+                        inherit
+                    >
+                        Waffle
+                    </Text>
+                    !
+                </Text>
+
+                <Button size="md">Sign in</Button>
+            </Container>
+        </div>
     );
 }

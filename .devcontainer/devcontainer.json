@@ -8,8 +8,13 @@
             "extensions": [
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
-                "EditorConfig.EditorConfig"
-            ]
+                "EditorConfig.EditorConfig",
+                "csstools.postcss",
+                "bradlc.vscode-tailwindcss"
+            ],
+            "settings": {
+                "remote.autoForwardPorts": false
+            }
         }
     }
 }
