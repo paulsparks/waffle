@@ -1,4 +1,7 @@
-import { Button, Container, Text } from "@mantine/core";
+"use client";
+
+import { Container, Text } from "@mantine/core";
+import { LinkButton } from "../components/LinkButton";
 
 export default function Home() {
     return (
@@ -17,7 +20,9 @@ export default function Home() {
                     !
                 </Text>
 
-                <Button size="md">Sign in</Button>
+                <LinkButton size="md" href="/sign-in">
+                    Sign in
+                </LinkButton>
             </Container>
         </div>
     );
