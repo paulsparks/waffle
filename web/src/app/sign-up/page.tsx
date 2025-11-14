@@ -2,9 +2,10 @@
 
 import { Error } from "@/src/components/Error";
 import { authClient } from "@/src/utils/auth-client";
-import { Button, Text, TextInput } from "@mantine/core";
+import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import z from "zod";
@@ -72,9 +73,9 @@ export default function SignUp() {
 
     return (
         <div className="flex flex-col items-center justify-center h-full">
-            <div className="w-md">
+            <div className="w-sm">
                 <Text size="20pt" className="text-center">
-                    Sign in
+                    Create Account
                 </Text>
                 <form onSubmit={form.onSubmit(signUp)} className="*:mt-2">
                     <TextInput
@@ -98,23 +99,27 @@ export default function SignUp() {
                         key={form.key("username")}
                         {...form.getInputProps("username")}
                     />
-                    <TextInput
+                    <PasswordInput
                         withAsterisk
                         label="Password"
                         placeholder="Password"
                         key={form.key("password")}
                         {...form.getInputProps("password")}
                     />
-                    <TextInput
+                    <PasswordInput
                         withAsterisk
                         label="Confirm Password"
                         placeholder="Password"
                         key={form.key("confirmPassword")}
                         {...form.getInputProps("confirmPassword")}
                     />
-                    <Button type="submit" className="mt-8!">
-                        Submit
-                    </Button>
+                    <div className="mt-6! flex flex-col items-center gap-4">
+                        <Button type="submit">Sign up</Button>
+                        <Text>
+                            Already have an account?{" "}
+                            <Link href="/sign-in">Sign in.</Link>
+                        </Text>
+                    </div>
                     {error && <Error msg={error} className="mt-8!" />}
                 </form>
             </div>
