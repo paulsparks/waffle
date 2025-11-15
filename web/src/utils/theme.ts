@@ -57,18 +57,6 @@ export const themeColors = {
         "#ca8500",
         "#b07200",
     ],
-    dark: [
-        "EBDAA4",
-        "D6C695",
-        "C1B386",
-        "AD9F76",
-        "988C67",
-        "837858",
-        "6E6549",
-        "5A5139",
-        "453E2A",
-        "302A1B",
-    ],
 } as const;
 
 const themeOverride = createTheme({
