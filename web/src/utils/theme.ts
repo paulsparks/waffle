@@ -57,6 +57,19 @@ export const themeColors = {
         "#ca8500",
         "#b07200",
     ],
+    dark: [
+        "#ffefcb",
+        "#eae8e6",
+        "#d6cec7",
+        "#c1b3a5",
+        "#b09c88",
+        "#0d1117",
+        "#241d15",
+        "#1a1510",
+        "#8d7359",
+        "#7e654d",
+        "#17120d",
+    ],
 } as const;
 
 const themeOverride = createTheme({
@@ -71,12 +84,8 @@ const themeOverride = createTheme({
                 variant: "outline",
             },
         }),
-        Text: Text.extend({
-            defaultProps: {
-                c: themeColors.waffleTan[2],
-            },
-        }),
     },
+    primaryShade: 6,
 });
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, themeOverride);
