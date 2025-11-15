@@ -2,6 +2,7 @@
 
 import { authClient } from "@/src/utils/auth-client";
 import { Button, Skeleton } from "@mantine/core";
+import { omit } from "radash";
 
 export default function Profile() {
     const { data } = authClient.useSession();
@@ -15,7 +16,31 @@ export default function Profile() {
                 {data?.user && (
                     <>
                         <h1>Your Profile</h1>
-                        <p>Hello {data.user.name}!</p>
+                        {Object.keys(
+                            omit(data.user, [
+                                "createdAt",
+                                "updatedAt",
+                                "image",
+                                "emailVerified",
+                                "displayUsername",
+                            ])
+                        ).map((key) => (
+                            <p key={key}>
+                                {key}:{" "}
+                                {
+                                    data.user[
+                                        key as keyof Omit<
+                                            typeof data.user,
+                                            | "createdAt"
+                                            | "updatedAt"
+                                            | "image"
+                                            | "emailVerified"
+                                            | "displayUsername"
+                                        >
+                                    ]
+                                }
+                            </p>
+                        ))}
                     </>
                 )}
             </Skeleton>
