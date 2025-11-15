@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 import z from "zod";
 import { signUpSchema } from "../sign-up/page";
 import Link from "next/link";
+import { GoogleSignIn } from "@/src/components/GoogleSignIn";
 
 export const signInSchema = signUpSchema.pick({
     username: true,
@@ -73,6 +74,7 @@ export default function SignIn() {
                     />
                     <div className="mt-6! flex flex-col items-center gap-4">
                         <Button type="submit">Sign in</Button>
+                        <GoogleSignIn onError={(err) => setError(err)} />
                         <Text>
                             Don&apos;t have an account?{" "}
                             <Link href="/sign-up">Create a new one.</Link>

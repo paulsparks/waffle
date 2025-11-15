@@ -1,6 +1,7 @@
 "use client";
 
 import { Error } from "@/src/components/Error";
+import { GoogleSignIn } from "@/src/components/GoogleSignIn";
 import { authClient } from "@/src/utils/auth-client";
 import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -115,6 +116,7 @@ export default function SignUp() {
                     />
                     <div className="mt-6! flex flex-col items-center gap-4">
                         <Button type="submit">Sign up</Button>
+                        <GoogleSignIn onError={(err) => setError(err)} />
                         <Text>
                             Already have an account?{" "}
                             <Link href="/sign-in">Sign in.</Link>

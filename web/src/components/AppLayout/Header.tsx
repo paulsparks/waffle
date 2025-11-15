@@ -1,63 +1,87 @@
 import { Tabs } from "@mantine/core";
-import { IconHome, IconUser, ReactNode } from "@tabler/icons-react";
+import { IconHome, IconUser } from "@tabler/icons-react";
 import { usePathname, useRouter } from "next/navigation";
+import { WaffleTextLogo } from "../WaffleTextLogo";
+import { useCallback, useMemo } from "react";
+import { isEmpty } from "radash";
+import Link from "next/link";
 
 const PATHS = {
-    Home: "/home",
-    Profile: "/profile",
+    Home: {
+        path: "/home",
+        hasText: false,
+        icon: <IconHome />,
+    },
+    Profile: {
+        path: "/profile",
+        hasText: false,
+        icon: <IconUser />,
+    },
 } as const;
 
-const PATH_ICONS: Record<(typeof PATHS)[keyof typeof PATHS], ReactNode> = {
-    "/home": <IconHome />,
-    "/profile": <IconUser />,
+const PATH_LOCATIONS: Record<"middle" | "right", Array<keyof typeof PATHS>> = {
+    middle: ["Home"],
+    right: ["Profile"],
 };
-
-const MIDDLE_PATHS: Array<keyof typeof PATHS> = ["Home"];
-const RIGHT_PATHS: Array<keyof typeof PATHS> = ["Profile"];
 
 export function Header() {
     const router = useRouter();
     const pathname = usePathname();
 
+    const createTabs = useCallback(
+        (paths: Array<keyof typeof PATHS>) =>
+            paths
+                .filter((p) => p in PATHS)
+                .map((key) => {
+                    const p = PATHS[key as keyof typeof PATHS];
+
+                    return (
+                        <Tabs.Tab
+                            onClick={() => router.push(p.path)}
+                            key={p.path}
+                            value={p.path}
+                            leftSection={p.icon}
+                        >
+                            {p.hasText && key}
+                        </Tabs.Tab>
+                    );
+                }),
+        [router]
+    );
+
+    const tabs = useMemo(
+        () => ({
+            middle: createTabs(PATH_LOCATIONS.middle),
+            right: createTabs(PATH_LOCATIONS.right),
+        }),
+        [createTabs]
+    );
+
     return (
         <div className="flex justify-between items-center">
-            <div className="flex-1"></div>
-            <Tabs value={pathname} className="flex-1">
-                <Tabs.List className="w-fit mx-auto">
-                    {MIDDLE_PATHS.filter((p) => p in PATHS).map((path) => (
-                        <Tabs.Tab
-                            onClick={() =>
-                                router.push(PATHS[path as keyof typeof PATHS])
-                            }
-                            key={PATHS[path as keyof typeof PATHS]}
-                            value={PATHS[path as keyof typeof PATHS]}
-                            leftSection={
-                                PATH_ICONS[PATHS[path as keyof typeof PATHS]]
-                            }
-                        >
-                            {path}
-                        </Tabs.Tab>
-                    ))}
-                </Tabs.List>
-            </Tabs>
-            <Tabs value={pathname} className="flex-1">
-                <Tabs.List className="w-fit ml-auto">
-                    {RIGHT_PATHS.filter((p) => p in PATHS).map((path) => (
-                        <Tabs.Tab
-                            onClick={() =>
-                                router.push(PATHS[path as keyof typeof PATHS])
-                            }
-                            key={PATHS[path as keyof typeof PATHS]}
-                            value={PATHS[path as keyof typeof PATHS]}
-                            leftSection={
-                                PATH_ICONS[PATHS[path as keyof typeof PATHS]]
-                            }
-                        >
-                            {path}
-                        </Tabs.Tab>
-                    ))}
-                </Tabs.List>
-            </Tabs>
+            <div className="flex-1 h-full flex flex-col justify-center">
+                <Link href="/home" className="no-underline! pl-4 text-2xl">
+                    <WaffleTextLogo />
+                </Link>
+            </div>
+            {isEmpty(tabs.middle) ? (
+                <div className="flex-1" />
+            ) : (
+                <Tabs value={pathname} className="flex-1 h-full">
+                    <Tabs.List className="w-fit mx-auto h-full">
+                        {tabs.middle}
+                    </Tabs.List>
+                </Tabs>
+            )}
+            {isEmpty(tabs.right) ? (
+                <div className="flex-1" />
+            ) : (
+                <Tabs value={pathname} className="flex-1 h-full">
+                    <Tabs.List className="w-fit ml-auto h-full">
+                        {tabs.right}
+                    </Tabs.List>
+                </Tabs>
+            )}
         </div>
     );
 }
