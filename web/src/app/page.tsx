@@ -2,6 +2,13 @@
 
 import { Container, Text } from "@mantine/core";
 import { LinkButton } from "../components/LinkButton";
+import { themeColors } from "../utils/theme";
+import { Cal_Sans } from "next/font/google";
+
+const knewave = Cal_Sans({
+    subsets: ["latin"],
+    weight: "400",
+});
 
 export default function Home() {
     return (
@@ -12,12 +19,15 @@ export default function Home() {
                     <Text
                         component="span"
                         variant="gradient"
-                        gradient={{ from: "orange", to: "yellow" }}
+                        gradient={{
+                            from: themeColors.waffleOrange[4],
+                            to: themeColors.waffleLightBrown[9],
+                        }}
                         inherit
+                        className={knewave.className}
                     >
                         Waffle
                     </Text>
-                    !
                 </Text>
 
                 <LinkButton size="md" href="/sign-in">

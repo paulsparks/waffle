@@ -1,3 +1,4 @@
+import { theme } from "@/src/utils/theme";
 import { MantineProvider, MantineProviderProps } from "@mantine/core";
 import { PropsWithChildren } from "react";
 
@@ -7,6 +8,8 @@ const mantineProviderConfig: MantineProviderProps = {
 
 export function AppProvider({ children }: PropsWithChildren) {
     return (
-        <MantineProvider {...mantineProviderConfig}>{children}</MantineProvider>
+        <MantineProvider theme={theme} {...mantineProviderConfig}>
+            {children}
+        </MantineProvider>
     );
 }
