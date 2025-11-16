@@ -19,11 +19,31 @@ export const auth = betterAuth({
         user: {
             create: {
                 async after(user) {
-                    // TODO: Add a check for emailToUsername output already existing
                     if (!user.username) {
+                        let generatedUsername = emailToUsername(user.email);
+
+                        let usernameFound = false;
+                        let count = 1;
+                        while (!usernameFound) {
+                            const res = await db
+                                .selectFrom("user")
+                                .select("username")
+                                .where("username", "=", generatedUsername)
+                                .executeTakeFirst();
+
+                            const usernameTaken = !!res;
+
+                            if (usernameTaken) {
+                                generatedUsername += count;
+                                count++;
+                            } else {
+                                usernameFound = true;
+                            }
+                        }
+
                         await db
                             .updateTable("user")
-                            .set("username", emailToUsername(user.email))
+                            .set("username", generatedUsername)
                             .where("id", "=", user.id)
                             .execute();
                     }
