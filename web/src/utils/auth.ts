@@ -15,6 +15,15 @@ export const auth = betterAuth({
         },
     },
     plugins: [username()],
+    user: {
+        additionalFields: {
+            bio: {
+                type: "string",
+                required: false,
+                input: true,
+            },
+        },
+    },
     databaseHooks: {
         user: {
             create: {

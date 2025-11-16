@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    ActionIcon,
     Button,
     createTheme,
     DEFAULT_THEME,
@@ -82,6 +83,13 @@ const themeOverride = createTheme({
         Button: Button.extend({
             defaultProps: {
                 variant: "outline",
+            },
+        }),
+        ActionIcon: ActionIcon.extend({
+            defaultProps: {
+                variant: "subtle",
+                radius: "xl",
+                size: "lg",
             },
         }),
     },
