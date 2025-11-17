@@ -58,7 +58,7 @@ export function Header() {
     );
 
     return (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center fixed w-full bg-waffle-header">
             <div className="flex-1 h-full flex flex-col justify-center">
                 <Link href="/home" className="no-underline! pl-4 text-2xl">
                     <WaffleTextLogo />

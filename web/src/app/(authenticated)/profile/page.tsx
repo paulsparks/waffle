@@ -11,7 +11,7 @@ export default function Profile() {
     const router = useRouter();
 
     return (
-        <div className="flex flex-col h-full items-center gap-4">
+        <div className="flex flex-col h-full items-center gap-4 pt-10">
             <div className="flex w-full items-center justify-between px-10">
                 <div className="flex-1"></div>
                 <h1 className="flex-1 text-center mx-0! mb-0! mt-3!">

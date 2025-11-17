@@ -2,7 +2,6 @@
 
 import { Container, Loader, Text } from "@mantine/core";
 import { LinkButton } from "../components/LinkButton";
-import { themeColors } from "../utils/theme";
 import { useRouter } from "next/navigation";
 import { authClient } from "../utils/auth-client";
 import { useEffect } from "react";

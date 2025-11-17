@@ -6,7 +6,7 @@ import {
     createTheme,
     DEFAULT_THEME,
     mergeMantineTheme,
-    Text,
+    Tooltip,
 } from "@mantine/core";
 
 export const themeColors = {
@@ -91,6 +91,9 @@ const themeOverride = createTheme({
                 radius: "xl",
                 size: "lg",
             },
+        }),
+        Tooltip: Tooltip.extend({
+            defaultProps: { color: "rgba(96, 72, 52, 0.15)" },
         }),
     },
     primaryShade: 6,

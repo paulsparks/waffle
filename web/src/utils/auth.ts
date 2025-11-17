@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { username } from "better-auth/plugins";
 import { db, pgPool } from "./db";
 import { emailToUsername } from "./emailToUsername";
+import { waffleTables } from "./waffleTables";
 
 export const auth = betterAuth({
     database: pgPool,
@@ -14,7 +15,7 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         },
     },
-    plugins: [username()],
+    plugins: [username(), waffleTables()],
     user: {
         additionalFields: {
             bio: {
