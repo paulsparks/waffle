@@ -1,5 +1,6 @@
 "use client";
 
+import { PostList } from "@/src/components/Post";
 import { ActionIcon, Button, Modal, Textarea, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -92,21 +93,14 @@ export default function Home() {
         <div className="flex flex-col h-full items-center">
             <div className="flex w-full">
                 <div className="flex-1" />
-                <div className="flex-2">
-                    {posts.map((post) => (
-                        <div
-                            key={post.id}
-                            className="flex flex-col p-4 gap-2 border-b border-overlay-white"
-                        >
-                            <div className="flex justify-start p-1">
-                                <h5>@{post.user?.username}</h5>
-                            </div>
-                            <p className="ml-4 whitespace-pre-wrap">
-                                {post.text}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+                <PostList
+                    className="flex-2"
+                    posts={posts.map((p) => ({
+                        id: p.id,
+                        text: p.text,
+                        username: p.user?.username ?? "",
+                    }))}
+                />
                 <div className="flex-1" />
             </div>
             <Modal

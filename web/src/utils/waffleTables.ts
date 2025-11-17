@@ -82,6 +82,25 @@ export const waffleTables = () => {
                     return postsWithUser;
                 }
             ),
+            getPostsByUser: createAuthEndpoint(
+                "/get-posts/:userId",
+                {
+                    method: "GET",
+                },
+                async (ctx) => {
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    return db
+                        .selectFrom("posts")
+                        .where("userId", "=", ctx.params.userId)
+                        .selectAll()
+                        .execute();
+                }
+            ),
         },
         schema: {
             posts: {

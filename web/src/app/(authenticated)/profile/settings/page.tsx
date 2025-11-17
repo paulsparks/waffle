@@ -153,9 +153,12 @@ export default function Profile() {
                                         {editingProfile && (
                                             <div className="flex gap-2">
                                                 <Button
-                                                    onClick={() =>
-                                                        setEditingProfile(false)
-                                                    }
+                                                    onClick={() => {
+                                                        setEditingProfile(
+                                                            false
+                                                        );
+                                                        form.reset();
+                                                    }}
                                                 >
                                                     Cancel
                                                 </Button>
