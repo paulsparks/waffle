@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import z from "zod";
 
 export const createPostSchema = z.object({
-    text: z.string(),
+    text: z.string().min(1, { error: "Post cannot be empty" }),
 });
 
 export type CreatePost = z.infer<typeof createPostSchema>;
