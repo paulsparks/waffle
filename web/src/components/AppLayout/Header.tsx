@@ -5,28 +5,40 @@ import { WaffleTextLogo } from "../WaffleTextLogo";
 import { useCallback, useMemo } from "react";
 import { isEmpty } from "radash";
 import Link from "next/link";
-
-const PATHS = {
-    Home: {
-        path: "/home",
-        hasText: false,
-        icon: <IconHome />,
-    },
-    Profile: {
-        path: "/profile",
-        hasText: false,
-        icon: <IconUser />,
-    },
-} as const;
-
-const PATH_LOCATIONS: Record<"middle" | "right", Array<keyof typeof PATHS>> = {
-    middle: ["Home"],
-    right: ["Profile"],
-};
+import { authClient } from "@/src/utils/auth-client";
 
 export function Header() {
     const router = useRouter();
     const pathname = usePathname();
+    const { data } = authClient.useSession();
+
+    const PATHS = useMemo(
+        () =>
+            ({
+                Home: {
+                    path: "/home",
+                    hasText: false,
+                    icon: <IconHome />,
+                },
+                Profile: {
+                    path: `/profile/${data?.user.id}`,
+                    hasText: false,
+                    icon: <IconUser />,
+                },
+            } as const),
+        [data?.user.id]
+    );
+
+    const PATH_LOCATIONS: Record<
+        "middle" | "right",
+        Array<keyof typeof PATHS>
+    > = useMemo(
+        () => ({
+            middle: ["Home"],
+            right: ["Profile"],
+        }),
+        []
+    );
 
     const createTabs = useCallback(
         (paths: Array<keyof typeof PATHS>) =>
@@ -46,7 +58,7 @@ export function Header() {
                         </Tabs.Tab>
                     );
                 }),
-        [router]
+        [PATHS, router]
     );
 
     const tabs = useMemo(
@@ -54,7 +66,7 @@ export function Header() {
             middle: createTabs(PATH_LOCATIONS.middle),
             right: createTabs(PATH_LOCATIONS.right),
         }),
-        [createTabs]
+        [PATH_LOCATIONS.middle, PATH_LOCATIONS.right, createTabs]
     );
 
     return (

@@ -1,1 +1,0 @@
-create table "posts" ("id" text not null primary key, "userId" text not null, "text" text not null, "createdAt" timestamptz not null, "likes" integer not null, "reposts" integer not null);

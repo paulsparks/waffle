@@ -1,0 +1,1 @@
+create table "posts" ("id" text not null primary key, "userId" text not null references "user" ("id") on delete no action, "text" text not null, "createdAt" timestamptz not null, "likes" jsonb not null, "reposts" integer not null);

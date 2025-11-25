@@ -1,13 +1,14 @@
 "use client";
 
-import { PostList } from "@/src/components/Post";
+import { PostList } from "@/src/components/PostList";
+import { usePosts } from "@/src/hooks/usePosts";
 import { ActionIcon, Button, Modal, Textarea, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconFeatherFilled } from "@tabler/icons-react";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import z from "zod";
 
 export const createPostSchema = z.object({
@@ -16,46 +17,9 @@ export const createPostSchema = z.object({
 
 export type CreatePost = z.infer<typeof createPostSchema>;
 
-// NOTE: This comes from waffleTables.ts
-export type PostWithUser = {
-    user:
-        | {
-              name: string;
-              username: string | null;
-          }
-        | undefined;
-    text: string;
-    id: string;
-    createdAt: Date;
-    likes: number;
-    reposts: number;
-    userId: string;
-};
-
 export default function Home() {
     const [opened, { open, close }] = useDisclosure(false);
-    const [posts, setPosts] = useState<PostWithUser[]>([]);
-
-    const getPosts = useCallback(async () => {
-        const res = await fetch("/api/auth/get-posts", {
-            method: "GET",
-        });
-
-        if (res.status === 200) {
-            const posts: PostWithUser[] = await res.json();
-            setPosts(posts);
-        } else {
-            notifications.show({
-                message: "An unknown error occurred",
-                position: "top-right",
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        getPosts();
-    }, [getPosts]);
+    const { posts, refreshPosts } = usePosts();
 
     const form = useForm<CreatePost>({
         validate: zod4Resolver(createPostSchema),
@@ -78,7 +42,7 @@ export default function Home() {
             if (status === 200) {
                 close();
                 form.reset();
-                getPosts();
+                refreshPosts();
             } else {
                 notifications.show({
                     message: "An unknown error occurred",
@@ -86,7 +50,7 @@ export default function Home() {
                 });
             }
         },
-        [close, form, getPosts]
+        [close, form, refreshPosts]
     );
 
     return (
@@ -94,12 +58,9 @@ export default function Home() {
             <div className="flex w-full">
                 <div className="flex-1" />
                 <PostList
+                    posts={posts}
+                    refreshPosts={refreshPosts}
                     className="flex-2"
-                    posts={posts.map((p) => ({
-                        id: p.id,
-                        text: p.text,
-                        username: p.user?.username ?? "",
-                    }))}
                 />
                 <div className="flex-1" />
             </div>

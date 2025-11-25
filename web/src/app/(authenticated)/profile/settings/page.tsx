@@ -80,7 +80,9 @@ export default function Profile() {
         <div className="flex flex-col h-full items-center gap-4 pt-10">
             <div className="flex w-xl items-center justify-between">
                 <div className="flex-1 flex items-center justify-start">
-                    <ActionIcon onClick={() => router.push("/profile")}>
+                    <ActionIcon
+                        onClick={() => router.push(`/profile/${data?.user.id}`)}
+                    >
                         <IconArrowLeft />
                     </ActionIcon>
                 </div>

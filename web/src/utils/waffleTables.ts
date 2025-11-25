@@ -10,7 +10,9 @@ export const createPostSchema = z.object({
     text: z.string(),
 });
 
-export type CreatePost = z.infer<typeof createPostSchema>;
+export const likePostSchema = z.object({
+    postId: z.string(),
+});
 
 export const getUserByIdSchema = z.object({
     id: z.string(),
@@ -22,6 +24,47 @@ export const waffleTables = () => {
     return {
         id: "waffle-tables",
         endpoints: {
+            likePost: createAuthEndpoint(
+                "/like-post",
+                {
+                    method: "POST",
+                },
+                async (ctx) => {
+                    const body = likePostSchema.safeParse(ctx.body);
+
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    if (!body.success) {
+                        return ctx.error("BAD_REQUEST");
+                    }
+
+                    const likesRaw = await db
+                        .selectFrom("posts")
+                        .select("likes")
+                        .where("id", "=", body.data.postId)
+                        .executeTakeFirst();
+
+                    // TODO: Figure out why this thinks it's a string
+                    let likes = likesRaw?.likes as unknown as string[];
+
+                    // TODO: Do this via the DB instead of querying unnecessary data
+                    if (likes.some((x) => x === session.user.id)) {
+                        likes = likes.filter((x) => x !== session.user.id);
+                    } else {
+                        likes.push(session.user.id);
+                    }
+
+                    await db
+                        .updateTable("posts")
+                        .set("likes", JSON.stringify(likes))
+                        .where("id", "=", body.data.postId)
+                        .execute();
+                }
+            ),
             createPost: createAuthEndpoint(
                 "/create-post",
                 {
@@ -47,7 +90,7 @@ export const waffleTables = () => {
                             userId: session.user.id,
                             text: body.data.text.trim(),
                             createdAt: new Date(),
-                            likes: 0,
+                            likes: "[]",
                             reposts: 0,
                         })
                         .execute();
@@ -68,8 +111,10 @@ export const waffleTables = () => {
                     const posts = await db
                         .selectFrom("posts")
                         .selectAll()
+                        .orderBy("createdAt", "desc")
                         .execute();
 
+                    // TODO: This mapping can probably be done way more efficiently with SQL
                     const postsWithUser = await map(posts, async (post) => ({
                         ...post,
                         user: await db
@@ -94,11 +139,42 @@ export const waffleTables = () => {
                         return ctx.error("UNAUTHORIZED");
                     }
 
-                    return db
+                    const posts = await db
                         .selectFrom("posts")
                         .where("userId", "=", ctx.params.userId)
                         .selectAll()
+                        .orderBy("createdAt", "desc")
                         .execute();
+
+                    const user = await db
+                        .selectFrom("user")
+                        .select(["name", "username"])
+                        .where("id", "=", ctx.params.userId)
+                        .executeTakeFirst();
+
+                    return posts.map((post) => ({
+                        ...post,
+                        user: { ...user },
+                    }));
+                }
+            ),
+            getUser: createAuthEndpoint(
+                "/get-user/:userId",
+                {
+                    method: "GET",
+                },
+                async (ctx) => {
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    return await db
+                        .selectFrom("user")
+                        .select(["id", "bio", "username", "image", "name"])
+                        .where("id", "=", ctx.params.userId)
+                        .executeTakeFirst();
                 }
             ),
         },
@@ -123,8 +199,9 @@ export const waffleTables = () => {
                         type: "date",
                         required: true,
                     },
+                    // Array of user IDs of those who liked the post
                     likes: {
-                        type: "number",
+                        type: "string[]",
                         required: true,
                     },
                     reposts: {
