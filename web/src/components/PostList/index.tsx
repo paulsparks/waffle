@@ -47,11 +47,19 @@ export function PostList({ posts, refreshPosts, className }: PostListProps) {
                     key={post.id}
                     className="flex flex-col p-4 gap-2 border-b border-overlay-white"
                 >
-                    <div
-                        className="flex justify-start p-1 cursor-pointer"
-                        onClick={() => router.push(`/profile/${post.userId}`)}
-                    >
-                        <h5>@{post.user?.username}</h5>
+                    <div className="flex p-1">
+                        <div className="flex-1">
+                            <h5
+                                className="cursor-pointer w-fit"
+                                onClick={() =>
+                                    router.push(`/profile/${post.userId}`)
+                                }
+                            >
+                                @{post.user?.username}
+                            </h5>
+                        </div>
+                        <div className="flex-1"></div>
+                        <div className="flex-1"></div>
                     </div>
                     <p className="ml-4 mb-2! whitespace-pre-wrap">
                         {post.text}

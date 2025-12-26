@@ -22,7 +22,7 @@ export function Profile({ userId }: Readonly<ProfileProps>) {
         <div className="flex flex-col h-full items-center gap-4 pt-10">
             {/* NOTE: The "user &&" part of this is just to make the settings load at the same time as the rest */}
             {user && data?.user.id === userId && (
-                <div className="flex-1 flex items-center justify-end w-full px-10">
+                <div className="flex items-center justify-end w-full px-10">
                     <ActionIcon
                         onClick={() => router.push("/profile/settings")}
                     >

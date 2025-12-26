@@ -153,7 +153,7 @@ export default function Profile() {
                                             {...form.getInputProps("bio")}
                                         />
                                         {editingProfile && (
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 justify-center">
                                                 <Button
                                                     onClick={() => {
                                                         setEditingProfile(

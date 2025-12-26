@@ -10,7 +10,7 @@ export const createPostSchema = z.object({
     text: z.string(),
 });
 
-export const likePostSchema = z.object({
+export const postIdSchema = z.object({
     postId: z.string(),
 });
 
@@ -30,7 +30,7 @@ export const waffleTables = () => {
                     method: "POST",
                 },
                 async (ctx) => {
-                    const body = likePostSchema.safeParse(ctx.body);
+                    const body = postIdSchema.safeParse(ctx.body);
 
                     const session = await getSessionFromCtx(ctx);
 
@@ -49,11 +49,14 @@ export const waffleTables = () => {
                         .executeTakeFirst();
 
                     // TODO: Figure out why this thinks it's a string
-                    let likes = likesRaw?.likes as unknown as string[];
+                    const likes = likesRaw?.likes as unknown as string[];
 
                     // TODO: Do this via the DB instead of querying unnecessary data
                     if (likes.some((x) => x === session.user.id)) {
-                        likes = likes.filter((x) => x !== session.user.id);
+                        const index = likes.indexOf(session.user.id);
+                        if (index > -1) {
+                            likes.splice(index, 1);
+                        }
                     } else {
                         likes.push(session.user.id);
                     }
@@ -93,6 +96,41 @@ export const waffleTables = () => {
                             likes: "[]",
                             reposts: 0,
                         })
+                        .execute();
+                }
+            ),
+            deletePost: createAuthEndpoint(
+                "/delete-post",
+                {
+                    method: "POST",
+                },
+                async (ctx) => {
+                    const body = postIdSchema.safeParse(ctx.body);
+
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    if (!body.success) {
+                        return ctx.error("BAD_REQUEST");
+                    }
+
+                    const ownsPost = await db
+                        .selectFrom("posts")
+                        .select("id")
+                        .where("id", "=", body.data.postId)
+                        .where("userId", "=", session.user.id)
+                        .executeTakeFirst();
+
+                    if (!ownsPost) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    await db
+                        .deleteFrom("posts")
+                        .where("id", "=", body.data.postId)
                         .execute();
                 }
             ),
