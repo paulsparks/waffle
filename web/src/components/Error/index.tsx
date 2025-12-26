@@ -3,7 +3,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 
 export interface ErrorProps {
     msg: string;
-    className: string;
+    className?: string;
 }
 
 export function Error({ msg, className }: ErrorProps) {

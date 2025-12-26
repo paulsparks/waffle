@@ -134,6 +134,38 @@ export const waffleTables = () => {
                         .execute();
                 }
             ),
+            getPost: createAuthEndpoint(
+                "/get-post/:postId",
+                {
+                    method: "GET",
+                },
+                async (ctx) => {
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    const post = await db
+                        .selectFrom("posts")
+                        .selectAll()
+                        .where("id", "=", ctx.params.postId)
+                        .executeTakeFirst();
+
+                    if (!post) {
+                        return ctx.error("BAD_REQUEST");
+                    }
+
+                    return {
+                        ...post,
+                        user: await db
+                            .selectFrom("user")
+                            .select(["name", "username"])
+                            .where("id", "=", post.userId)
+                            .executeTakeFirst(),
+                    };
+                }
+            ),
             getPosts: createAuthEndpoint(
                 "/get-posts",
                 {
@@ -196,6 +228,27 @@ export const waffleTables = () => {
                     }));
                 }
             ),
+            getCommentsByPost: createAuthEndpoint(
+                "/get-comments/:postId",
+                {
+                    method: "GET",
+                },
+                async (ctx) => {
+                    const session = await getSessionFromCtx(ctx);
+
+                    if (!session) {
+                        return ctx.error("UNAUTHORIZED");
+                    }
+
+                    // TODO: Find a good way to resolve the user as part of each comment directly in the DB.
+                    return await db
+                        .selectFrom("comments")
+                        .where("postId", "=", ctx.params.postId)
+                        .selectAll()
+                        .orderBy("createdAt", "desc")
+                        .execute();
+                }
+            ),
             getUser: createAuthEndpoint(
                 "/get-user/:userId",
                 {
@@ -217,6 +270,43 @@ export const waffleTables = () => {
             ),
         },
         schema: {
+            comments: {
+                fields: {
+                    userId: {
+                        type: "string",
+                        required: true,
+                        references: {
+                            model: "user",
+                            field: "id",
+                            // TODO: Create a field to mark a comment as hidden when its user is deleted.
+                            onDelete: "no action",
+                        },
+                    },
+                    postId: {
+                        type: "string",
+                        required: true,
+                        references: {
+                            model: "posts",
+                            field: "id",
+                            // TODO: Create a field to mark a comment as hidden when its post is deleted.
+                            onDelete: "no action",
+                        },
+                    },
+                    text: {
+                        type: "string",
+                        required: true,
+                    },
+                    // Array of user IDs of those who liked the comment
+                    likes: {
+                        type: "string[]",
+                        required: true,
+                    },
+                    createdAt: {
+                        type: "date",
+                        required: true,
+                    },
+                },
+            },
             posts: {
                 fields: {
                     userId: {
